@@ -1,0 +1,121 @@
+{
+  "header": {
+    "appName": "Legal AI Analyzer",
+    "logout": "Wyloguj"
+  },
+  "login": {
+    "title": "Legal AI Analyzer",
+    "subtitle": "Bezpieczna analiza komunikacji w Twojej sprawie, oparta na cytatach. Mamy dostęp tylko do tego, na co wyraźnie zezwolisz.",
+    "signIn": "Zaloguj się przez Google"
+  },
+  "common": {
+    "loading": "Wczytywanie..."
+  },
+  "dateRanges": {
+    "today": "Dzisiaj",
+    "yesterday": "Wczoraj",
+    "7d": "Ostatnie 7 dni",
+    "28d": "Ostatnie 28 dni",
+    "90d": "Ostatnie 90 dni",
+    "custom": "Niestandardowy zakres dat"
+  },
+  "dashboard": {
+    "safetyGate": "Bezpieczna Brama",
+    "safetyGateDescription": "Przejrzyj poniżej metadane rozmów i wyraźnie wybierz, które wątki autoryzujesz do analizy. Treść wiadomości nigdy nie jest udostępniana bez Twojej autoryzacji.",
+    "threads": "Wątki",
+    "messages": "Wiadomości",
+    "personFilterLabel": "Filtruj według osoby",
+    "personFilterPlaceholder": "Filtruj według nadawcy — wpisz imię lub e-mail i naciśnij Enter",
+    "dateRangeLabel": "Zakres dat",
+    "customRangeLabel": "Niestandardowy zakres",
+    "syncSectionLabel": "Synchronizuj z Gmail — pobiera tylko nowe dane, nie filtruje listy poniżej",
+    "keywordFilterLabel": "Słowo kluczowe",
+    "keywordFilterPlaceholder": "np. faktura, Arvind Mathur",
+    "resultLimitLabel": "Limit wyników",
+    "searchSectionLabel": "Szukaj — filtruje listę wątków poniżej",
+    "emailFilterLabel": "E-mail",
+    "emailFilterPlaceholder": "Szukaj według e-maila nadawcy...",
+    "subjectFilterLabel": "Temat",
+    "subjectFilterPlaceholder": "Szukaj według tematu...",
+    "syncFromGmail": "Synchronizuj z Gmail",
+    "syncFromGmailTitle": "Pobierz metadane wątków zgodnych z aktualnymi filtrami",
+    "syncing": "Synchronizowanie...",
+    "lastSynced": "Ostatnia synchronizacja: {{date}}",
+    "refreshAuthorized": "Odśwież autoryzowane",
+    "refreshAuthorizedTitle": "Sprawdź już autoryzowane wątki pod kątem nowych wiadomości i ponownie je przetwórz",
+    "checking": "Sprawdzanie...",
+    "authorizeSelected": "Autoryzuj wybrane ({{count}})",
+    "noThreads": "Brak wątków odpowiadających filtrom.",
+    "noThreadsHint": "Kliknij \"Synchronizuj z Gmail\", aby pobrać nowe dane.",
+    "columnFrom": "Od",
+    "columnSubject": "Temat",
+    "columnLabels": "Etykiety",
+    "columnStatus": "Status",
+    "columnDate": "Data",
+    "authorized": "Autoryzowano",
+    "notAuthorized": "Nieautoryzowano",
+    "view": "Podgląd",
+    "viewTitleAuthorized": "Zobacz wyodrębnione, oczyszczone wiadomości",
+    "viewTitleNotAuthorized": "Najpierw autoryzuj ten wątek",
+    "story": "Historia",
+    "storyTitle": "Wygeneruj narracyjne podsumowanie tego wątku z cytowaniami",
+    "loadMore": "Wczytaj więcej",
+    "loadingMore": "Wczytywanie...",
+    "toastLoadFailed": "Nie udało się wczytać wątków z bazy danych.",
+    "toastSyncSuccess": "Zsynchronizowano {{count}} wątek(ów) z Gmail.",
+    "toastSyncFailed": "Synchronizacja z Gmail nie powiodła się.",
+    "toastRefreshSuccessWithUpdates": "Sprawdzono {{checked}} autoryzowanych wątków, ponownie przetworzono {{reExtracted}} zaktualizowanych wątków.",
+    "toastRefreshSuccessNoUpdates": "Sprawdzono {{checked}} autoryzowanych wątków — brak nowych wiadomości.",
+    "toastRefreshFailed": "Nie udało się odświeżyć autoryzowanych wątków.",
+    "toastAlreadyAuthorized": "Wybrane wątki są już autoryzowane.",
+    "toastAuthorizeSuccess": "Autoryzowano {{updated}} wątek(ów), wyodrębniono {{extracted}} wiadomości.",
+    "toastAuthorizePartialFailure": "Nie udało się przetworzyć {{count}} wątków — zgoda została jednak zapisana.",
+    "toastConsentFailed": "Nie udało się zapisać zgody."
+  },
+  "consent": {
+    "title_one": "Autoryzuj {{count}} wątek do analizy",
+    "title_few": "Autoryzuj {{count}} wątki do analizy",
+    "title_other": "Autoryzuj {{count}} wątków do analizy",
+    "descriptionSingle": "Autoryzując ten wątek, potwierdzasz, że masz prawo udostępnić te dane komunikacyjne i zgadzasz się na ich przetwarzanie oraz bezpieczne przechowywanie do analizy sprawy. Treść wiadomości jest dostępna tylko dla wątków, które wyraźnie autoryzujesz.",
+    "descriptionPlural": "Autoryzując te wątki, potwierdzasz, że masz prawo udostępnić te dane komunikacyjne i zgadzasz się na ich przetwarzanie oraz bezpieczne przechowywanie do analizy sprawy. Treść wiadomości jest dostępna tylko dla wątków, które wyraźnie autoryzujesz.",
+    "cancel": "Anuluj",
+    "confirm": "Zgadzam się i autoryzuję",
+    "authorizing": "Autoryzowanie..."
+  },
+  "askAI": {
+    "title": "Zapytaj AI",
+    "description": "Zadaj pytanie dotyczące Twoich autoryzowanych komunikacji. Odpowiedzi są oparte wyłącznie na Twoich danych — jeśli czegoś tam nie ma, AI powie to wprost, zamiast zgadywać.",
+    "placeholder": "np. Czy pan Jan odpowiadał z opóźnieniem na e-maile dotyczące dzierżawy?",
+    "ask": "Zapytaj",
+    "sourcesConsulted": "Wykorzystane źródła",
+    "noSubject": "Brak tematu",
+    "errorDefault": "Nie udało się uzyskać odpowiedzi. Spróbuj ponownie."
+  },
+  "syncPreview": {
+    "title": "Przejrzyj wątki przed synchronizacją",
+    "description": "Te wątki odpowiadają Twoim aktualnym filtrom synchronizacji, pobrane na żywo z Gmail. Nic nie zostało jeszcze zapisane — odznacz te, których nie chcesz, a następnie potwierdź.",
+    "selectAll": "Wybierz wszystkie",
+    "syncSelected_one": "Synchronizuj wybrany ({{count}})",
+    "syncSelected_few": "Synchronizuj wybrane ({{count}})",
+    "syncSelected_other": "Synchronizuj wybrane ({{count}})",
+    "cancel": "Anuluj",
+    "noResults": "Brak wątków odpowiadających filtrom synchronizacji.",
+    "loading": "Wczytywanie..."
+  },
+  "threadStory": {
+    "title": "Historia wątku",
+    "description": "Chronologiczna narracja tej rozmowy, wygenerowana z oczyszczonych wiadomości — każde twierdzenie jest powiązane z konkretną wiadomością.",
+    "generating": "Generowanie historii...",
+    "sourcesConsulted": "Wykorzystane źródła",
+    "errorDefault": "Nie udało się wygenerować historii. Spróbuj ponownie."
+  },
+  "extracted": {
+    "sanitizedBadge": "Oczyszczone do analizy",
+    "printPdf": "Drukuj / Eksportuj do PDF",
+    "defaultTitle": "Wyodrębnione wiadomości",
+    "sanitizedNote": "Oczyszczona, przechowywana wersja używana do analizy sprawy — podpisy, zastrzeżenia prawne i cytowane odpowiedzi zostały usunięte.",
+    "notAuthorizedYet": "Ten wątek nie został jeszcze autoryzowany/przetworzony.",
+    "noReadableContent": "Brak czytelnej treści po oczyszczeniu.",
+    "loadFailed": "Nie udało się wczytać wyodrębnionych wiadomości."
+  }
+}

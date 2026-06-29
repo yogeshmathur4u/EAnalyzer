@@ -1,0 +1,119 @@
+{
+  "header": {
+    "appName": "Legal AI Analyzer",
+    "logout": "Logout"
+  },
+  "login": {
+    "title": "Legal AI Analyzer",
+    "subtitle": "Secure, citation-backed analysis of your case communications. We only access what you explicitly authorize.",
+    "signIn": "Sign in with Google"
+  },
+  "common": {
+    "loading": "Loading..."
+  },
+  "dateRanges": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "7d": "Last 7 days",
+    "28d": "Last 28 days",
+    "90d": "Last 90 days",
+    "custom": "Custom date range"
+  },
+  "dashboard": {
+    "safetyGate": "The Safety Gate",
+    "safetyGateDescription": "Review conversation metadata below and explicitly select which threads you authorize for analysis. Message content is never accessed until you authorize it.",
+    "threads": "Threads",
+    "messages": "Messages",
+    "personFilterLabel": "Filter by person",
+    "personFilterPlaceholder": "Filter by sender — type a name or email and press Enter",
+    "dateRangeLabel": "Date range",
+    "customRangeLabel": "Custom range",
+    "syncSectionLabel": "Sync from Gmail — fetches new data only, doesn't filter the list below",
+    "keywordFilterLabel": "Keyword",
+    "keywordFilterPlaceholder": "e.g. invoice, Arvind Mathur",
+    "resultLimitLabel": "Limit results to",
+    "searchSectionLabel": "Search — filters the thread list below",
+    "emailFilterLabel": "Email",
+    "emailFilterPlaceholder": "Search by sender email...",
+    "subjectFilterLabel": "Subject",
+    "subjectFilterPlaceholder": "Search by subject...",
+    "syncFromGmail": "Sync from Gmail",
+    "syncFromGmailTitle": "Fetch metadata for threads matching the current filters",
+    "syncing": "Syncing...",
+    "lastSynced": "Last synced: {{date}}",
+    "refreshAuthorized": "Refresh Authorized",
+    "refreshAuthorizedTitle": "Check already-authorized threads for new messages and re-extract them",
+    "checking": "Checking...",
+    "authorizeSelected": "Authorize Selected ({{count}})",
+    "noThreads": "No threads match your filters.",
+    "noThreadsHint": "Try clicking \"Sync from Gmail\" to pull in fresh data.",
+    "columnFrom": "From",
+    "columnSubject": "Subject",
+    "columnLabels": "Labels",
+    "columnStatus": "Status",
+    "columnDate": "Date",
+    "authorized": "Authorized",
+    "notAuthorized": "Not authorized",
+    "view": "View",
+    "viewTitleAuthorized": "View extracted, sanitized messages",
+    "viewTitleNotAuthorized": "Authorize this thread first",
+    "story": "Story",
+    "storyTitle": "Generate a cited narrative summary of this thread",
+    "loadMore": "Load more",
+    "loadingMore": "Loading...",
+    "toastLoadFailed": "Failed to load threads from the database.",
+    "toastSyncSuccess": "Synced {{count}} thread(s) from Gmail.",
+    "toastSyncFailed": "Failed to sync from Gmail.",
+    "toastRefreshSuccessWithUpdates": "Checked {{checked}} authorized thread(s), re-extracted {{reExtracted}} updated thread(s).",
+    "toastRefreshSuccessNoUpdates": "Checked {{checked}} authorized thread(s) — no new messages.",
+    "toastRefreshFailed": "Failed to refresh authorized threads.",
+    "toastAlreadyAuthorized": "Selected thread(s) are already authorized.",
+    "toastAuthorizeSuccess": "Authorized {{updated}} thread(s), extracted {{extracted}} message(s).",
+    "toastAuthorizePartialFailure": "{{count}} thread(s) failed to extract — consent was still recorded.",
+    "toastConsentFailed": "Failed to record consent."
+  },
+  "consent": {
+    "title_one": "Authorize {{count}} thread for analysis",
+    "title_other": "Authorize {{count}} threads for analysis",
+    "descriptionSingle": "By authorizing this thread, you confirm you have the right to share this communication data and consent to it being processed and securely stored for case analysis. Message content is only accessed for threads you explicitly authorize.",
+    "descriptionPlural": "By authorizing these threads, you confirm you have the right to share this communication data and consent to it being processed and securely stored for case analysis. Message content is only accessed for threads you explicitly authorize.",
+    "cancel": "Cancel",
+    "confirm": "I Consent & Authorize",
+    "authorizing": "Authorizing..."
+  },
+  "askAI": {
+    "title": "Ask AI",
+    "description": "Ask a question about your authorized communications. Answers are grounded only in your data — if it's not there, the AI will say so instead of guessing.",
+    "placeholder": "e.g. Did Mr. John reply late to emails about the lease?",
+    "ask": "Ask",
+    "sourcesConsulted": "Sources consulted",
+    "noSubject": "No subject",
+    "errorDefault": "Failed to get an answer. Please try again."
+  },
+  "syncPreview": {
+    "title": "Review threads before syncing",
+    "description": "These threads match your current Sync filters, fetched live from Gmail. Nothing is saved yet — uncheck any you don't want, then confirm.",
+    "selectAll": "Select all",
+    "syncSelected_one": "Sync Selected ({{count}})",
+    "syncSelected_other": "Sync Selected ({{count}})",
+    "cancel": "Cancel",
+    "noResults": "No threads match your Sync filters.",
+    "loading": "Loading..."
+  },
+  "threadStory": {
+    "title": "Thread Story",
+    "description": "A chronological narrative of this conversation, generated from the sanitized messages — every claim is cited back to a specific message.",
+    "generating": "Generating story...",
+    "sourcesConsulted": "Sources consulted",
+    "errorDefault": "Failed to generate the story. Please try again."
+  },
+  "extracted": {
+    "sanitizedBadge": "Sanitized for analysis",
+    "printPdf": "Print / Export PDF",
+    "defaultTitle": "Extracted Messages",
+    "sanitizedNote": "Cleaned, stored version used for case analysis — signatures, disclaimers, and quoted replies have been removed.",
+    "notAuthorizedYet": "This thread hasn't been authorized/extracted yet.",
+    "noReadableContent": "No readable content after sanitization.",
+    "loadFailed": "Failed to load extracted messages."
+  }
+}

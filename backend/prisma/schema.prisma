@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  extensions = [vector]
+}
+
+model User {
+  id        String   @id // Google profile id (sub)
+  email     String   @unique
+  name      String?
+  picture   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  googleToken       GoogleToken?
+  threads           Thread[]
+  extractedMessages ExtractedMessage[]
+  messageChunks     MessageChunk[]
+}
+
+model GoogleToken {
+  userId       String   @id
+  accessToken  String
+  refreshToken String?
+  scope        String?
+  tokenType    String?
+  expiryDate   BigInt?
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Thread {
+  id           String   @id @default(cuid())
+  userId       String
+  threadId     String
+  subject      String?
+  fromAddress  String?
+  toAddress    String?
+  labelIds     String[]
+  messageCount Int      @default(1)
+  internalDate BigInt?
+  data         Json
+  lastSyncedAt DateTime @default(now())
+
+  consentAccepted   Boolean   @default(false)
+  consentAcceptedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+
+  extractedMessages ExtractedMessage[]
+  messageChunks     MessageChunk[]
+
+  @@unique([userId, threadId])
+  @@index([userId, internalDate])
+}
+
+model ExtractedMessage {
+  id             String   @id @default(cuid())
+  userId         String
+  threadId       String
+  messageId      String   @unique
+  fromAddress    String?
+  toAddress      String?
+  subject        String?
+  date           String?
+  internalDate   BigInt?
+  sanitizedText  String
+  originalLength Int
+  sanitizedAt    DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  thread Thread @relation(fields: [userId, threadId], references: [userId, threadId], onDelete: Cascade)
+
+  @@index([userId, threadId])
+}
+
+model MessageChunk {
+  id         String                       @id @default(cuid())
+  userId     String
+  threadId   String
+  messageId  String
+  chunkIndex Int
+  chunkText  String                       // encrypted, same convention as ExtractedMessage.sanitizedText
+  embedding  Unsupported("vector(768)")?
+  createdAt  DateTime                     @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  thread Thread @relation(fields: [userId, threadId], references: [userId, threadId], onDelete: Cascade)
+
+  @@unique([messageId, chunkIndex])
+  @@index([userId, threadId])
+}
