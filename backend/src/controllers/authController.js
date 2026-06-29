@@ -75,7 +75,7 @@ export async function googleCallback(req, res) {
     res.cookie(SESSION_COOKIE, sessionToken, {
       httpOnly: true,
       secure: isProd,
-      sameSite: 'lax',
+      sameSite: isProd ? 'none' : 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
