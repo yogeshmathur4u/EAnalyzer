@@ -267,7 +267,10 @@ export async function getSavedThreads(
   const where = { userId };
 
   if (emailFilter) {
-    where.fromAddress = { contains: emailFilter, mode: 'insensitive' };
+    where.OR = [
+      { fromAddress: { contains: emailFilter, mode: 'insensitive' } },
+      { toAddress: { contains: emailFilter, mode: 'insensitive' } },
+    ];
   }
 
   if (subjectFilter) {

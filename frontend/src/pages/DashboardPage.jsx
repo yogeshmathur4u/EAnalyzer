@@ -143,7 +143,7 @@ export function DashboardPage() {
   function buildSyncQuery() {
     const personQuery =
       personFilters.length > 0
-        ? `(${personFilters.map((p) => `from:"${p}"`).join(' OR ')})`
+        ? `(${personFilters.map((p) => `from:"${p}" OR to:"${p}"`).join(' OR ')})`
         : ''
     const keywordQuery =
       keywordFilters.length > 0
