@@ -291,8 +291,8 @@ export function DashboardPage() {
     <div className="min-h-screen bg-gradient-to-b from-indigo-50 via-background to-background">
       <Header user={user} />
 
-      <main className="mx-auto max-w-7xl px-6 py-8">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_380px]">
+      <main className="w-full px-4 py-8 lg:px-8">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_400px]">
         <Card className="min-w-0 overflow-hidden border-none shadow-md">
           <CardHeader className="bg-gradient-to-r from-indigo-600 to-violet-600 text-white">
             <div className="flex items-center gap-3">

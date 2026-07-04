@@ -30,7 +30,7 @@
     "customRangeLabel": "Niestandardowy zakres",
     "syncSectionLabel": "Synchronizuj z Gmail — pobiera tylko nowe dane, nie filtruje listy poniżej",
     "keywordFilterLabel": "Słowo kluczowe",
-    "keywordFilterPlaceholder": "np. faktura, Arvind Mathur",
+    "keywordFilterPlaceholder": "np. faktura, imię osoby",
     "resultLimitLabel": "Limit wyników",
     "searchSectionLabel": "Szukaj — filtruje listę wątków poniżej",
     "emailFilterLabel": "E-mail",

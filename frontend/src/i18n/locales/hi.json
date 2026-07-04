@@ -30,7 +30,7 @@
     "customRangeLabel": "कस्टम सीमा",
     "syncSectionLabel": "Gmail से सिंक करें — केवल नया डेटा लाता है, नीचे की सूची को फ़िल्टर नहीं करता",
     "keywordFilterLabel": "कीवर्ड",
-    "keywordFilterPlaceholder": "जैसे: invoice, Arvind Mathur",
+    "keywordFilterPlaceholder": "जैसे: invoice, person name",
     "resultLimitLabel": "परिणाम सीमित करें",
     "searchSectionLabel": "खोज — नीचे की थ्रेड सूची को फ़िल्टर करता है",
     "emailFilterLabel": "ईमेल",

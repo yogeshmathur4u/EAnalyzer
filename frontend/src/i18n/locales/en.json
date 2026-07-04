@@ -30,7 +30,7 @@
     "customRangeLabel": "Custom range",
     "syncSectionLabel": "Sync from Gmail — fetches new data only, doesn't filter the list below",
     "keywordFilterLabel": "Keyword",
-    "keywordFilterPlaceholder": "e.g. invoice, Arvind Mathur",
+    "keywordFilterPlaceholder": "e.g. invoice, Person name",
     "resultLimitLabel": "Limit results to",
     "searchSectionLabel": "Search — filters the thread list below",
     "emailFilterLabel": "Email",
