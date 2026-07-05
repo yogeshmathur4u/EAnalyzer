@@ -6,25 +6,21 @@ import {
   hasMicrosoftTokens,
 } from '../utils/microsoftTokenStore.js';
 
-const STATE_COOKIE = 'ms_oauth_state';
-const isProd = process.env.NODE_ENV === 'production';
+// State = HMAC(userId, secret) — no cookie needed, survives cross-domain redirects.
+function generateState(userId) {
+  return crypto
+    .createHmac('sha256', process.env.SESSION_SECRET || 'ms-state-secret')
+    .update(userId)
+    .digest('hex');
+}
 
 export function microsoftConnect(req, res) {
-  const state = crypto.randomBytes(16).toString('hex');
-
-  res.cookie(STATE_COOKIE, state, {
-    httpOnly: true,
-    secure: isProd,
-    sameSite: isProd ? 'none' : 'lax',
-    maxAge: 5 * 60 * 1000,
-  });
-
+  const state = generateState(req.user.id);
   res.redirect(getMicrosoftAuthUrl(state));
 }
 
 export async function microsoftCallback(req, res) {
   const { code, state, error } = req.query;
-  const expectedState = req.cookies[STATE_COOKIE];
 
   if (error) {
     console.error('Microsoft OAuth error:', error, req.query.error_description);
@@ -33,11 +29,10 @@ export async function microsoftCallback(req, res) {
     );
   }
 
-  if (!state || !expectedState || state !== expectedState) {
+  const expectedState = generateState(req.user.id);
+  if (!state || state !== expectedState) {
     return res.status(403).json({ error: 'Invalid or missing OAuth state' });
   }
-
-  res.clearCookie(STATE_COOKIE, { httpOnly: true, secure: isProd, sameSite: isProd ? 'none' : 'lax' });
 
   try {
     const tokens = await exchangeCodeForTokens(code);
