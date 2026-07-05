@@ -15,7 +15,7 @@ export function microsoftConnect(req, res) {
   res.cookie(STATE_COOKIE, state, {
     httpOnly: true,
     secure: isProd,
-    sameSite: 'lax',
+    sameSite: isProd ? 'none' : 'lax',
     maxAge: 5 * 60 * 1000,
   });
 
@@ -37,7 +37,7 @@ export async function microsoftCallback(req, res) {
     return res.status(403).json({ error: 'Invalid or missing OAuth state' });
   }
 
-  res.clearCookie(STATE_COOKIE);
+  res.clearCookie(STATE_COOKIE, { httpOnly: true, secure: isProd, sameSite: isProd ? 'none' : 'lax' });
 
   try {
     const tokens = await exchangeCodeForTokens(code);
