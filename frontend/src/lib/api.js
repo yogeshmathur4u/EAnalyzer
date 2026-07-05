@@ -65,4 +65,40 @@ export const api = {
     }),
   generateThreadStory: (threadId) =>
     request(`/ai/threads/${threadId}/story`, { method: 'POST' }),
+
+  // ── Microsoft / Outlook ────────────────────────────────────────────────────
+  getMicrosoftStatus: () => request('/auth/microsoft/status'),
+  connectMicrosoft: () => {
+    window.location.href = `${API_BASE_URL}/auth/microsoft/connect`
+  },
+  disconnectMicrosoft: () => request('/auth/microsoft/disconnect', { method: 'DELETE' }),
+
+  getOutlookMetadata: ({ q, maxResults, after, before } = {}) => {
+    const params = new URLSearchParams()
+    if (q) params.set('q', q)
+    if (maxResults) params.set('maxResults', maxResults)
+    if (after) params.set('after', after)
+    if (before) params.set('before', before)
+    return request(`/outlook/metadata?${params.toString()}`)
+  },
+  syncFromOutlook: ({ q, maxResults, after, before } = {}) => {
+    const params = new URLSearchParams()
+    if (q) params.set('q', q)
+    if (maxResults) params.set('maxResults', maxResults)
+    if (after) params.set('after', after)
+    if (before) params.set('before', before)
+    return request(`/outlook/sync?${params.toString()}`, { method: 'POST' })
+  },
+  syncSelectedOutlookThreads: (conversationIds) =>
+    request('/outlook/sync/selected', {
+      method: 'POST',
+      body: JSON.stringify({ conversationIds }),
+    }),
+  refreshAuthorizedOutlookThreads: () =>
+    request('/outlook/threads/refresh-authorized', { method: 'POST' }),
+  submitOutlookConsent: (threadIds) =>
+    request('/outlook/threads/consent', {
+      method: 'POST',
+      body: JSON.stringify({ threadIds }),
+    }),
 }

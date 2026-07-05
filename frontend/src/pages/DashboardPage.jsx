@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Search, Inbox, ShieldCheck, CalendarRange, RefreshCw, CheckCircle2, Eye, ShieldHalf, Sparkles } from 'lucide-react'
+import { Search, Inbox, ShieldCheck, CalendarRange, RefreshCw, CheckCircle2, Eye, ShieldHalf, Sparkles, Mail, Link2, Link2Off } from 'lucide-react'
 import { Header } from '@/components/Header'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -22,6 +22,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/useToast'
 import { api } from '@/lib/api'
 import { TIME_RANGES, buildDateRangeQuery, buildDateRangeBounds } from '@/lib/dateRanges'
+import { useSearchParams } from 'react-router-dom'
 import { getLabelColorClasses, formatLabel } from '@/lib/labelColors'
 import { formatDateTime } from '@/lib/formatDate'
 
@@ -61,6 +62,10 @@ export function DashboardPage() {
   const { t } = useTranslation()
   const { user } = useAuth()
   const { toasts, showToast, dismissToast } = useToast()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [outlookConnected, setOutlookConnected] = useState(false)
+  const [outlookSyncing, setOutlookSyncing] = useState(false)
+  const [outlookRefreshing, setOutlookRefreshing] = useState(false)
   const [emailFilter, setEmailFilter] = useState('')
   const [subjectFilter, setSubjectFilter] = useState('')
   const [timeRange, setTimeRange] = useState('7d')
@@ -121,6 +126,22 @@ export function DashboardPage() {
 
   useEffect(() => {
     fetchSavedThreads(emailFilter, subjectFilter, 1)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Check Microsoft connection status + handle redirect params from OAuth callback
+  useEffect(() => {
+    api.getMicrosoftStatus().then((data) => setOutlookConnected(data.connected)).catch(() => {})
+
+    if (searchParams.get('ms_connected') === '1') {
+      showToast('Outlook connected successfully.', 'success')
+      setOutlookConnected(true)
+      setSearchParams({})
+    }
+    if (searchParams.get('ms_error')) {
+      showToast('Failed to connect Outlook. Please try again.', 'error')
+      setSearchParams({})
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -211,6 +232,48 @@ export function DashboardPage() {
     }
   }
 
+  async function handleOutlookSync() {
+    setOutlookSyncing(true)
+    try {
+      const bounds = buildDateRangeBounds(timeRange, { customStart, customEnd })
+      const result = await api.syncFromOutlook({
+        q: keywordFilters.length > 0 ? keywordFilters.join(' ') : undefined,
+        maxResults: resultLimit,
+        after: bounds?.after,
+        before: bounds?.before,
+      })
+      await fetchSavedThreads(emailFilter, subjectFilter, 1)
+      showToast(`Synced ${result.syncedCount} Outlook thread(s).`, 'success')
+    } catch (err) {
+      showToast(err.body?.error || 'Failed to sync from Outlook.', 'error')
+    } finally {
+      setOutlookSyncing(false)
+    }
+  }
+
+  async function handleOutlookRefreshAuthorized() {
+    setOutlookRefreshing(true)
+    try {
+      const result = await api.refreshAuthorizedOutlookThreads()
+      await fetchSavedThreads(emailFilter, subjectFilter, 1)
+      const message =
+        result.updatedCount > 0
+          ? `Checked ${result.checkedCount} Outlook thread(s), re-extracted ${result.reExtractedCount} updated.`
+          : `Checked ${result.checkedCount} Outlook thread(s) — no new messages.`
+      showToast(message, 'success')
+    } catch (err) {
+      showToast(err.body?.error || 'Failed to refresh Outlook threads.', 'error')
+    } finally {
+      setOutlookRefreshing(false)
+    }
+  }
+
+  async function handleDisconnectOutlook() {
+    await api.disconnectMicrosoft()
+    setOutlookConnected(false)
+    showToast('Outlook disconnected.', 'success')
+  }
+
   async function handleRefreshAuthorized() {
     setRefreshingAuthorized(true)
     try {
@@ -263,7 +326,21 @@ export function DashboardPage() {
   async function handleConsentConfirm() {
     setSubmittingConsent(true)
     try {
-      const result = await api.submitConsent([...selectedIds])
+      const selectedThreads = threads.filter((t) => selectedIds.has(t.threadId))
+      const gmailIds = selectedThreads.filter((t) => t.provider !== 'outlook').map((t) => t.threadId)
+      const outlookIds = selectedThreads.filter((t) => t.provider === 'outlook').map((t) => t.threadId)
+
+      const results = await Promise.all([
+        gmailIds.length > 0 ? api.submitConsent(gmailIds) : Promise.resolve({ updatedCount: 0, extractedMessageCount: 0, failedThreadCount: 0 }),
+        outlookIds.length > 0 ? api.submitOutlookConsent(outlookIds) : Promise.resolve({ updatedCount: 0, extractedMessageCount: 0, failedThreadCount: 0 }),
+      ])
+
+      const result = {
+        updatedCount: results.reduce((s, r) => s + (r?.updatedCount ?? 0), 0),
+        extractedMessageCount: results.reduce((s, r) => s + (r?.extractedMessageCount ?? 0), 0),
+        failedThreadCount: results.reduce((s, r) => s + (r?.failedThreadCount ?? 0), 0),
+      }
+
       setConsentDialogOpen(false)
       await fetchSavedThreads(emailFilter, subjectFilter, 1)
       showToast(
@@ -418,6 +495,58 @@ export function DashboardPage() {
                   </span>
                 )}
               </div>
+
+              {/* ── Outlook section ── */}
+              <div className="mt-3 flex flex-wrap items-center gap-3 border-t pt-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Mail className="h-4 w-4 text-blue-500" />
+                  <span className="font-semibold text-foreground">Outlook</span>
+                  {outlookConnected ? (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
+                      <CheckCircle2 className="h-3 w-3" /> Connected
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500">
+                      Not connected
+                    </span>
+                  )}
+                </div>
+
+                {outlookConnected ? (
+                  <>
+                    <Button
+                      variant="outline"
+                      onClick={handleOutlookSync}
+                      disabled={outlookSyncing}
+                    >
+                      {outlookSyncing ? <Spinner /> : <RefreshCw className="h-4 w-4" />}
+                      {outlookSyncing ? 'Syncing...' : 'Sync from Outlook'}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={handleOutlookRefreshAuthorized}
+                      disabled={outlookRefreshing}
+                    >
+                      {outlookRefreshing ? <Spinner /> : <ShieldHalf className="h-4 w-4" />}
+                      {outlookRefreshing ? 'Checking...' : 'Refresh Outlook Authorized'}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleDisconnectOutlook}
+                      className="text-destructive hover:text-destructive"
+                    >
+                      <Link2Off className="h-4 w-4" />
+                      Disconnect
+                    </Button>
+                  </>
+                ) : (
+                  <Button variant="outline" onClick={() => api.connectMicrosoft()}>
+                    <Link2 className="h-4 w-4" />
+                    Connect Outlook
+                  </Button>
+                )}
+              </div>
             </div>
 
             {/* Search: filters the thread list already displayed below */}
@@ -512,7 +641,14 @@ export function DashboardPage() {
                             >
                               {initialsFor(thread.from)}
                             </div>
-                            <span className="truncate">{thread.from}</span>
+                            <div className="flex min-w-0 flex-col">
+                              <span className="truncate">{thread.from}</span>
+                              {thread.provider === 'outlook' ? (
+                                <span className="text-[10px] font-medium text-blue-500">Outlook</span>
+                              ) : (
+                                <span className="text-[10px] font-medium text-red-400">Gmail</span>
+                              )}
+                            </div>
                           </div>
                         </TableCell>
                         <TableCell className="max-w-[320px] truncate">
