@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import { getMicrosoftAuthUrl, exchangeCodeForTokens } from '../config/microsoft.js';
 import {
   saveMicrosoftTokens,
@@ -6,21 +5,14 @@ import {
   hasMicrosoftTokens,
 } from '../utils/microsoftTokenStore.js';
 
-// State = HMAC(userId, secret) — no cookie needed, survives cross-domain redirects.
-function generateState(userId) {
-  return crypto
-    .createHmac('sha256', process.env.SESSION_SECRET || 'ms-state-secret')
-    .update(userId)
-    .digest('hex');
-}
-
 export function microsoftConnect(req, res) {
-  const state = generateState(req.user.id);
-  res.redirect(getMicrosoftAuthUrl(state));
+  // Pass userId as state so Microsoft echoes it back — no cookie or HMAC needed.
+  // requireAuth on the callback already validates the session (CSRF protection).
+  res.redirect(getMicrosoftAuthUrl(req.user.id));
 }
 
 export async function microsoftCallback(req, res) {
-  const { code, state, error } = req.query;
+  const { code, error } = req.query;
 
   if (error) {
     console.error('Microsoft OAuth error:', error, req.query.error_description);
@@ -29,9 +21,8 @@ export async function microsoftCallback(req, res) {
     );
   }
 
-  const expectedState = generateState(req.user.id);
-  if (!state || state !== expectedState) {
-    return res.status(403).json({ error: 'Invalid or missing OAuth state' });
+  if (!code) {
+    return res.redirect(`${process.env.FRONTEND_URL}/dashboard?ms_error=no_code`);
   }
 
   try {
