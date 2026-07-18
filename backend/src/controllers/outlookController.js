@@ -9,11 +9,21 @@ import { prisma } from '../config/db.js';
 
 export async function getMetadata(req, res) {
   const { q, maxResults, after, before } = req.query;
+  const parsedMax = maxResults ? Number(maxResults) : undefined;
+  if (parsedMax !== undefined && (!Number.isInteger(parsedMax) || parsedMax < 1)) {
+    return res.status(400).json({ error: 'maxResults must be a positive integer' });
+  }
+  if (after && isNaN(Date.parse(after))) {
+    return res.status(400).json({ error: 'after must be a valid ISO date string' });
+  }
+  if (before && isNaN(Date.parse(before))) {
+    return res.status(400).json({ error: 'before must be a valid ISO date string' });
+  }
 
   try {
     const result = await getOutlookMetadata(req.user.id, {
       q,
-      maxResults: maxResults ? Number(maxResults) : undefined,
+      maxResults: parsedMax ? Math.min(parsedMax, 200) : undefined,
       after,
       before,
     });
@@ -29,11 +39,18 @@ export async function getMetadata(req, res) {
 
 export async function syncFromOutlook(req, res) {
   const { q, maxResults, after, before } = req.query;
+  const parsedMax = maxResults ? Number(maxResults) : undefined;
+  if (after && isNaN(Date.parse(after))) {
+    return res.status(400).json({ error: 'after must be a valid ISO date string' });
+  }
+  if (before && isNaN(Date.parse(before))) {
+    return res.status(400).json({ error: 'before must be a valid ISO date string' });
+  }
 
   try {
     const result = await syncOutlookThreads(req.user.id, {
       q,
-      maxResults: maxResults ? Number(maxResults) : undefined,
+      maxResults: parsedMax ? Math.min(parsedMax, 200) : undefined,
       after,
       before,
     });
@@ -52,6 +69,9 @@ export async function syncSelected(req, res) {
 
   if (!Array.isArray(conversationIds) || conversationIds.length === 0) {
     return res.status(400).json({ error: 'conversationIds must be a non-empty array' });
+  }
+  if (conversationIds.length > 50) {
+    return res.status(400).json({ error: 'Cannot sync more than 50 threads at once' });
   }
 
   try {
@@ -84,6 +104,9 @@ export async function submitConsent(req, res) {
 
   if (!Array.isArray(threadIds) || threadIds.length === 0) {
     return res.status(400).json({ error: 'threadIds must be a non-empty array' });
+  }
+  if (threadIds.length > 50) {
+    return res.status(400).json({ error: 'Cannot authorize more than 50 threads at once' });
   }
 
   try {

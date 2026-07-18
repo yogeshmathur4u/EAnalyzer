@@ -24,7 +24,7 @@ async function request(path, options = {}) {
 
 export const api = {
   me: () => request('/auth/me'),
-  logout: () => request('/auth/logout'),
+  logout: () => request('/auth/logout', { method: 'POST' }),
   getGmailMetadata: ({ q, maxResults, pageToken } = {}) => {
     const params = new URLSearchParams()
     if (q) params.set('q', q)

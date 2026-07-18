@@ -11,11 +11,15 @@ import {
 
 export async function getMetadata(req, res) {
   const { q, maxResults, pageToken } = req.query;
+  const parsedMax = maxResults ? Number(maxResults) : undefined;
+  if (parsedMax !== undefined && (!Number.isInteger(parsedMax) || parsedMax < 1)) {
+    return res.status(400).json({ error: 'maxResults must be a positive integer' });
+  }
 
   try {
     const result = await getMessageMetadata(req.user.id, {
       q,
-      maxResults: maxResults ? Number(maxResults) : undefined,
+      maxResults: parsedMax ? Math.min(parsedMax, 200) : undefined,
       pageToken,
     });
 
@@ -70,11 +74,12 @@ export async function getThreads(req, res) {
 
 export async function syncFromGmail(req, res) {
   const { q, maxResults } = req.query;
+  const parsedMax = maxResults ? Number(maxResults) : undefined;
 
   try {
     const result = await syncThreads(req.user.id, {
       q,
-      maxResults: maxResults ? Number(maxResults) : undefined,
+      maxResults: parsedMax ? Math.min(parsedMax, 200) : undefined,
     });
 
     res.status(200).json(result);
@@ -95,6 +100,9 @@ export async function syncSelected(req, res) {
 
   if (!Array.isArray(threadIds) || threadIds.length === 0) {
     return res.status(400).json({ error: 'threadIds must be a non-empty array' });
+  }
+  if (threadIds.length > 50) {
+    return res.status(400).json({ error: 'Cannot sync more than 50 threads at once' });
   }
 
   try {
@@ -133,6 +141,9 @@ export async function submitConsent(req, res) {
 
   if (!Array.isArray(threadIds) || threadIds.length === 0) {
     return res.status(400).json({ error: 'threadIds must be a non-empty array' });
+  }
+  if (threadIds.length > 50) {
+    return res.status(400).json({ error: 'Cannot authorize more than 50 threads at once' });
   }
 
   try {

@@ -12,12 +12,13 @@ datasource db {
 }
 
 model User {
-  id        String   @id // Google profile id (sub)
-  email     String   @unique
-  name      String?
-  picture   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String    @id // Google profile id (sub)
+  email        String    @unique
+  name         String?
+  picture      String?
+  lastLogoutAt DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   googleToken       GoogleToken?
   microsoftToken    MicrosoftToken?

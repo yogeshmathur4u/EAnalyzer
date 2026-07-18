@@ -90,7 +90,36 @@ export function me(req, res) {
   res.status(200).json({ user: req.user });
 }
 
-export function logout(req, res) {
-  res.clearCookie(SESSION_COOKIE);
+export async function logout(req, res) {
+  try {
+    await prisma.user.update({
+      where: { id: req.user.id },
+      data: { lastLogoutAt: new Date() },
+    });
+  } catch {
+    // Non-fatal — still clear the cookie
+  }
+  res.clearCookie(SESSION_COOKIE, { httpOnly: true, secure: isProd, sameSite: isProd ? 'none' : 'lax' });
   res.status(204).end();
+}
+
+export async function deleteAccount(req, res) {
+  const userId = req.user.id;
+
+  try {
+    // Delete in dependency order — chunks and messages cascade from threads,
+    // but tokens and user must be deleted explicitly.
+    await prisma.messageChunk.deleteMany({ where: { userId } });
+    await prisma.extractedMessage.deleteMany({ where: { userId } });
+    await prisma.thread.deleteMany({ where: { userId } });
+    await prisma.googleToken.deleteMany({ where: { userId } });
+    await prisma.microsoftToken.deleteMany({ where: { userId } });
+    await prisma.user.delete({ where: { id: userId } });
+
+    res.clearCookie(SESSION_COOKIE, { httpOnly: true, secure: isProd, sameSite: isProd ? 'none' : 'lax' });
+    res.status(204).end();
+  } catch (err) {
+    console.error('Account deletion failed:', err);
+    res.status(500).json({ error: 'Failed to delete account' });
+  }
 }

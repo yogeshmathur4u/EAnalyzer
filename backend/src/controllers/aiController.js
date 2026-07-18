@@ -6,6 +6,9 @@ export async function askQuestion(req, res) {
   if (!question || typeof question !== 'string' || !question.trim()) {
     return res.status(400).json({ error: 'question must be a non-empty string' });
   }
+  if (question.length > 2000) {
+    return res.status(400).json({ error: 'question must be 2000 characters or fewer' });
+  }
 
   try {
     const result = await answerQuestion(req.user.id, question.trim(), { threadId });

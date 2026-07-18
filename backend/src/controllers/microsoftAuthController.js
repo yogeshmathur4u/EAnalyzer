@@ -15,7 +15,7 @@ export async function microsoftCallback(req, res) {
   const { code, error } = req.query;
 
   if (error) {
-    console.error('Microsoft OAuth error:', error, req.query.error_description);
+    console.error('Microsoft OAuth error:', error);
     return res.redirect(
       `${process.env.FRONTEND_URL}/dashboard?ms_error=${encodeURIComponent(error)}`
     );
